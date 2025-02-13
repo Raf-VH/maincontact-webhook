@@ -28,7 +28,7 @@ export class AccountController {
     getMainContact(
         @Param('accountId') accountId: string
     ): Promise<ContactPersonfile> {
-        return this.contactservice.GetMainContactAccountId(accountId);
+        return this.contactservice.GetMainContactByAccountId(accountId);
     }
 
     @Post()

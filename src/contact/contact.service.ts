@@ -11,7 +11,7 @@ import { DestinationService } from 'src/destination/destination.service';
 export class ContactService {
     constructor(private readonly destinationService: DestinationService) {}
 
-    async GetMainContactAccountId(
+    async GetMainContactByAccountId(
         accountId: string
     ): Promise<ContactPersonfile> {
         try {
@@ -31,14 +31,16 @@ export class ContactService {
                     );
                 });
 
-            // if (!account.value?.primaryContactId) {
-            //     throw new HttpException('Account has no primary contact', 404);
-            // }
+            if (!account.value?.primaryContactId) {
+                throw new HttpException('Account has no primary contact', 404);
+            }
 
-            console.log(account);
+            console.log(
+                'Account PrimaryContactID: ' + account.value.primaryContactId
+            );
 
             return await ContactPersonApi.readcontactpersonserviceContactperson(
-                account.primaryContactId
+                account.value.primaryContactId
             )
                 .execute({ destinationName: destination.name })
                 .catch((error) => {
