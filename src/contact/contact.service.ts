@@ -11,6 +11,81 @@ import { DestinationService } from 'src/destination/destination.service';
 export class ContactService {
     constructor(private readonly destinationService: DestinationService) {}
 
+    async UpdateCurrentMainContact(Id: string) {
+        const destination = this.destinationService.getDestination();
+
+        if (Id == '') {
+            throw new HttpException('Account has no primary contact', 404);
+        }
+
+        // Get current contact to get ETag
+        // const currentContact =
+        //     await ContactPersonApi.readcontactpersonserviceContactperson(
+        //         Id
+        //     ).execute({ destinationName: destination.name });
+
+        //Update 'MainContact' field of the currect Contact
+        const updatedContact =
+            await ContactPersonApi.partialupdatecontactpersonserviceContactperson(
+                Id,
+                {
+                    extensions: {
+                        MainContact: true
+                    }
+                },
+                {
+                    'If-Match': '*'
+                }
+            )
+                .execute({ destinationName: destination.name })
+                .catch((error) => {
+                    throw new HttpException(
+                        `Failed to update current main contact - ${error.message}`,
+                        500
+                    );
+                });
+
+        return updatedContact;
+    }
+
+    async UpdateBeforeMainContact(Id: string) {
+        const destination = this.destinationService.getDestination();
+
+        if (Id == '') {
+            throw new HttpException('Account has no primary contact', 404);
+        }
+
+        //Get before contact to get ETag
+        // const beforeContact =
+        //     await ContactPersonApi.readcontactpersonserviceContactperson(
+        //         Id
+        //     ).execute({ destinationName: destination.name });
+
+        //Update 'MainContact' field of the before Contact
+        const updatedContact =
+            await ContactPersonApi.partialupdatecontactpersonserviceContactperson(
+                Id,
+                {
+                    extensions: {
+                        MainContact: false
+                    }
+                },
+                {
+                    'If-Match': '*'
+                }
+            )
+                .execute({ destinationName: destination.name })
+                .catch((error) => {
+                    throw new HttpException(
+                        `Failed to update current main contact - ${error.message}`,
+                        500
+                    );
+                });
+
+        return updatedContact;
+    }
+
+    //Testing purposes
     async GetMainContactByAccountId(
         accountId: string
     ): Promise<ContactPersonfile> {

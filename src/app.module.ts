@@ -9,7 +9,7 @@ import { AccountService } from './account/account.service';
 
 @Module({
     imports: [ConfigModule.forRoot()],
-    controllers: [AppController, AccountController, AccountController],
+    controllers: [AppController, AccountController],
     providers: [AppService, AccountService, ContactService, DestinationService]
 })
 export class AppModule {}

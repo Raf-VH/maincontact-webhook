@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Post
+} from '@nestjs/common';
 import { AccountService } from './account.service';
 import {
     Accountfile,
@@ -7,21 +15,58 @@ import {
 import { ContactPersonfile } from 'services/SalesSvcCloudV2_contactPersonService';
 import { ContactService } from 'src/contact/contact.service';
 
-@Controller('accounts')
+@Controller('account')
 export class AccountController {
     constructor(
         private readonly accountservice: AccountService,
         private readonly contactservice: ContactService
     ) {}
 
-    @Get()
-    getAccounts(): Promise<Accountqueryresponse> {
-        return this.accountservice.getAccounts();
+    @Post()
+    async receiveWebhookData(
+        @Body() webhookPayload: any
+    ): Promise<Accountfile> {
+        try {
+            // Get CurrentImage of PrimaryContactId
+            console.log('Incoming Contact ID:');
+            console.log(webhookPayload.data?.currentImage?.primaryContactId);
+
+            const currentContact =
+                await this.contactservice.UpdateCurrentMainContact(
+                    webhookPayload.data?.currentImage?.primaryContactId
+                );
+
+            // Get BeforeImage of PrimaryContactId
+            console.log('Incoming Contact ID:');
+            console.log(webhookPayload.data?.beforeImage?.primaryContactId);
+
+            const beforeContact =
+                await this.contactservice.UpdateBeforeMainContact(
+                    webhookPayload.data?.beforeImage?.primaryContactId
+                );
+
+            console.log('Updated MainContact field:');
+            console.log(
+                'Current Contact: ' + currentContact.extensions?.MainContact
+            );
+            console.log(
+                'Before Contact: ' + beforeContact.extensions?.MainContact
+            );
+
+            return { status: 'succes' };
+        } catch (error) {
+            console.error(error);
+            throw new HttpException(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
-    @Get(':Id')
-    getAccount(@Param('Id') accountId: string): Promise<Accountfile> {
-        return this.accountservice.getAccountById(accountId);
+    // Testing purposes
+    @Get('/all')
+    getAccounts(): Promise<Accountqueryresponse> {
+        return this.accountservice.getAccounts();
     }
 
     @Get('/:accountId/maincontact')
@@ -30,7 +75,4 @@ export class AccountController {
     ): Promise<ContactPersonfile> {
         return this.contactservice.GetMainContactByAccountId(accountId);
     }
-
-    @Post()
-    postAccount() {}
 }

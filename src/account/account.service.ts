@@ -39,30 +39,18 @@ export class AccountService {
     }
 
     async getAccountById(id: string): Promise<Accountfile> {
-        try {
-            const destination = this.destinationService.getDestination();
+        const destination = this.destinationService.getDestination();
 
-            return await AccountApi.readaccountserviceAccount(id)
-                .execute({
-                    destinationName: destination.name
-                })
-                .catch((error) => {
-                    Logger.error(
-                        `SAP Error: ${JSON.stringify(error.response?.data || error.message)}`
-                    );
-                    throw new HttpException(
-                        `Failed to get account by ID - ${error.message}`,
-                        500
-                    );
-                });
-        } catch (error) {
-            if (error instanceof HttpException) {
-                throw error;
-            }
-            throw new HttpException(
-                `Failed to get account by ID - ${error.message}`,
-                500
-            );
-        }
+        //Read complete Account from AccountAPI
+        return await AccountApi.readaccountserviceAccount(id)
+            .execute({
+                destinationName: destination.name
+            })
+            .catch((error) => {
+                throw new HttpException(
+                    `Failed to retrieve complete account - ${error.message}`,
+                    500
+                );
+            });
     }
 }
