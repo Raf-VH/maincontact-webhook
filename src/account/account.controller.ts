@@ -1,22 +1,19 @@
 import {
     Body,
     Controller,
-    Get,
     HttpException,
     HttpStatus,
-    Param,
+    Logger,
     Post
 } from '@nestjs/common';
 import { AccountService } from './account.service';
-import {
-    Accountfile,
-    Accountqueryresponse
-} from 'services/SalesSvcCloudV2_accountService';
-import { ContactPersonfile } from 'services/SalesSvcCloudV2_contactPersonService';
+import { Accountfile } from 'services/SalesSvcCloudV2_accountService';
 import { ContactService } from 'src/contact/contact.service';
 
 @Controller('/account')
 export class AccountController {
+    private readonly logger = new Logger(AccountService.name);
+
     constructor(
         private readonly accountservice: AccountService,
         private readonly contactservice: ContactService
@@ -27,44 +24,32 @@ export class AccountController {
         @Body() webhookPayload: any
     ): Promise<Accountfile> {
         try {
-            // Get CurrentImage of PrimaryContactId
-            console.log('Incoming Contact ID:');
-            console.log(webhookPayload.data?.currentImage?.primaryContactId);
+            const currentContactId =
+                webhookPayload.data?.currentImage?.primaryContactId ?? '';
+            const beforeContactId =
+                webhookPayload.data?.beforeImage?.primaryContactId ?? '';
 
-            const currentContact =
+            this.logger.debug(
+                `Incoming Current Contact ID: ${currentContactId}`
+            );
+            this.logger.debug(`Incoming Before Contact ID: ${beforeContactId}`);
+
+            await Promise.all([
                 await this.contactservice.UpdateCurrentMainContact(
-                    webhookPayload.data?.currentImage?.primaryContactId
-                );
-
-            // Get BeforeImage of PrimaryContactId
-            console.log('Incoming Contact ID:');
-            console.log(webhookPayload.data?.beforeImage?.primaryContactId);
-
-            const beforeContact =
+                    currentContactId
+                ),
                 await this.contactservice.UpdateBeforeMainContact(
-                    webhookPayload.data?.beforeImage?.primaryContactId
-                );
+                    beforeContactId
+                )
+            ]);
 
-            return { status: 'succes' };
+            return { status: 'success' };
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             throw new HttpException(
                 error.message,
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
-    }
-
-    // Testing purposes
-    @Get('/all')
-    getAccounts(): Promise<Accountqueryresponse> {
-        return this.accountservice.getAccounts();
-    }
-
-    @Get('/:accountId/maincontact')
-    getMainContact(
-        @Param('accountId') accountId: string
-    ): Promise<ContactPersonfile> {
-        return this.contactservice.GetMainContactByAccountId(accountId);
     }
 }
