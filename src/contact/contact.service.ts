@@ -18,34 +18,45 @@ export class ContactService {
             throw new HttpException('Account has no primary contact', 404);
         }
 
-        // Get current contact to get ETag
-        // const currentContact =
-        //     await ContactPersonApi.readcontactpersonserviceContactperson(
-        //         Id
-        //     ).execute({ destinationName: destination.name });
+        setTimeout(async () => {
+            // Get current contact to get AdminData
+            const currentContact =
+                await ContactPersonApi.readcontactpersonserviceContactperson(
+                    Id
+                ).execute({ destinationName: destination.name });
 
-        //Update 'MainContact' field of the currect Contact
-        const updatedContact =
-            await ContactPersonApi.partialupdatecontactpersonserviceContactperson(
-                Id,
-                {
-                    extensions: {
-                        MainContact: true
+            const updatedOn = currentContact.value?.adminData?.updatedOn;
+
+            console.log('Last Modified: ' + updatedOn);
+            console.log(currentContact.value?.familyName);
+
+            //Update 'MainContact' field of the currect Contact
+            const updatedContact =
+                await ContactPersonApi.partialupdatecontactpersonserviceContactperson(
+                    Id,
+                    {
+                        extensions: {
+                            MainContact: true
+                        }
+                    },
+                    {
+                        'If-Match': '"' + updatedOn! + '"'
                     }
-                },
-                {
-                    'If-Match': '*'
-                }
-            )
-                .execute({ destinationName: destination.name })
-                .catch((error) => {
-                    throw new HttpException(
-                        `Failed to update current main contact - ${error.message}`,
-                        500
-                    );
-                });
+                )
+                    .addCustomHeaders({
+                        'Content-Type': 'application/merge-patch+json'
+                    })
+                    .execute({ destinationName: destination.name })
+                    .catch((error) => {
+                        console.log(error);
+                        throw new HttpException(
+                            `Failed to update current main contact - ${error.message}`,
+                            500
+                        );
+                    });
 
-        return updatedContact;
+            return updatedContact;
+        }, 10000);
     }
 
     async UpdateBeforeMainContact(Id: string) {
@@ -55,11 +66,16 @@ export class ContactService {
             throw new HttpException('Account has no primary contact', 404);
         }
 
-        //Get before contact to get ETag
-        // const beforeContact =
-        //     await ContactPersonApi.readcontactpersonserviceContactperson(
-        //         Id
-        //     ).execute({ destinationName: destination.name });
+        // Get current contact to get AdminData
+        const beforeContact =
+            await ContactPersonApi.readcontactpersonserviceContactperson(
+                Id
+            ).execute({ destinationName: destination.name });
+
+        const updatedOn = beforeContact.value?.adminData?.updatedOn;
+
+        console.log('Last Modified: ' + updatedOn);
+        console.log(beforeContact.value?.familyName);
 
         //Update 'MainContact' field of the before Contact
         const updatedContact =
@@ -71,13 +87,16 @@ export class ContactService {
                     }
                 },
                 {
-                    'If-Match': '*'
+                    'If-Match': '"' + updatedOn! + '"'
                 }
             )
+                .addCustomHeaders({
+                    'Content-Type': 'application/merge-patch+json'
+                })
                 .execute({ destinationName: destination.name })
                 .catch((error) => {
                     throw new HttpException(
-                        `Failed to update current main contact - ${error.message}`,
+                        `Failed to update before main contact - ${error.message}`,
                         500
                     );
                 });

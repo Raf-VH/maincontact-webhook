@@ -15,7 +15,7 @@ import {
 import { ContactPersonfile } from 'services/SalesSvcCloudV2_contactPersonService';
 import { ContactService } from 'src/contact/contact.service';
 
-@Controller('account')
+@Controller('/account')
 export class AccountController {
     constructor(
         private readonly accountservice: AccountService,
@@ -44,14 +44,6 @@ export class AccountController {
                 await this.contactservice.UpdateBeforeMainContact(
                     webhookPayload.data?.beforeImage?.primaryContactId
                 );
-
-            console.log('Updated MainContact field:');
-            console.log(
-                'Current Contact: ' + currentContact.extensions?.MainContact
-            );
-            console.log(
-                'Before Contact: ' + beforeContact.extensions?.MainContact
-            );
 
             return { status: 'succes' };
         } catch (error) {
