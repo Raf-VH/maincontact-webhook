@@ -22,9 +22,9 @@ export class AccountController {
     ): Promise<Accountfile> {
         try {
             const currentContactId =
-                webhookPayload.currentImage?.primaryContactId ?? '';
+                webhookPayload.data.currentImage?.primaryContactId ?? '';
             const beforeContactId =
-                webhookPayload.beforeImage?.primaryContactId ?? '';
+                webhookPayload.data.beforeImage?.primaryContactId ?? '';
 
             this.logger.debug(
                 `Incoming Current Contact ID: ${currentContactId}`
