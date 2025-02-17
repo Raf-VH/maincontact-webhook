@@ -19,14 +19,14 @@ export class ContactService {
             throw new HttpException('Account has no primary contact', 404);
         }
 
-        const destination = this.destinationService.getDestination();
+        // const destination = this.destinationService.getDestination();
 
         try {
             // Get contact to get 'updatedOn'
             const contact =
                 await ContactPersonApi.readcontactpersonserviceContactperson(
                     id
-                ).execute({ destinationName: destination.name });
+                ).execute({ destinationName: process.env.DESTINATION_NAME! });
 
             const updatedOn = contact.value?.adminData?.updatedOn;
 
@@ -49,7 +49,7 @@ export class ContactService {
                 .addCustomHeaders({
                     'Content-Type': 'application/merge-patch+json'
                 })
-                .execute({ destinationName: destination.name });
+                .execute({ destinationName: process.env.DESTINATION_NAME! });
         } catch (error) {
             throw new HttpException(
                 `Failed to update main contact - ${error.message}`,

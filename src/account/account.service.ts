@@ -11,12 +11,12 @@ export class AccountService {
     constructor(private readonly destinationService: DestinationService) {}
 
     async getAccountById(id: string): Promise<Accountfile> {
-        const destination = this.destinationService.getDestination();
+        // const destination = this.destinationService.getDestination();
 
         //Read complete Account from AccountAPI
         return await AccountApi.readaccountserviceAccount(id)
             .execute({
-                destinationName: destination.name
+                destinationName: process.env.DESTINATION_NAME!
             })
             .catch((error) => {
                 throw new HttpException(

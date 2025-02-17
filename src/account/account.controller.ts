@@ -14,10 +14,7 @@ import { ContactService } from 'src/contact/contact.service';
 export class AccountController {
     private readonly logger = new Logger(AccountService.name);
 
-    constructor(
-        private readonly accountservice: AccountService,
-        private readonly contactservice: ContactService
-    ) {}
+    constructor(private readonly contactservice: ContactService) {}
 
     @Post()
     async receiveWebhookData(
@@ -25,9 +22,9 @@ export class AccountController {
     ): Promise<Accountfile> {
         try {
             const currentContactId =
-                webhookPayload.data?.currentImage?.primaryContactId ?? '';
+                webhookPayload.currentImage?.primaryContactId ?? '';
             const beforeContactId =
-                webhookPayload.data?.beforeImage?.primaryContactId ?? '';
+                webhookPayload.beforeImage?.primaryContactId ?? '';
 
             this.logger.debug(
                 `Incoming Current Contact ID: ${currentContactId}`
