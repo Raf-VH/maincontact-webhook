@@ -2,14 +2,13 @@ import { HttpException, Injectable, Logger } from '@nestjs/common';
 import {
     ContactPersonApi,
     ContactPersonfile
-} from 'services/SalesSvcCloudV2_contactPersonService';
-import { DestinationService } from 'src/destination/destination.service';
+} from '../../services/SalesSvcCloudV2_contactPersonService';
 
 @Injectable()
 export class ContactService {
     private readonly logger = new Logger(ContactService.name);
 
-    constructor(private readonly destinationService: DestinationService) {}
+    constructor() {}
 
     private async updateContactMainStatus(
         id: string,
@@ -19,7 +18,10 @@ export class ContactService {
             throw new HttpException('Account has no primary contact', 404);
         }
 
-        // const destination = this.destinationService.getDestination();
+        // const destinations = JSON.parse(process.env.destinations);
+        // const destination = destinations.find(
+        //     (d) => d.name === process.env.DESTINATION_NAME
+        // );
 
         try {
             // Get contact to get 'updatedOn'

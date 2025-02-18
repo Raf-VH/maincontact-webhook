@@ -7,8 +7,8 @@ import {
     Post
 } from '@nestjs/common';
 import { AccountService } from './account.service';
-import { Accountfile } from 'services/SalesSvcCloudV2_accountService';
-import { ContactService } from 'src/contact/contact.service';
+import { Accountfile } from '../../services/SalesSvcCloudV2_accountService';
+import { ContactService } from '../contact/contact.service';
 
 @Controller('/account')
 export class AccountController {

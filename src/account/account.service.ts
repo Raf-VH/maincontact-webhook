@@ -3,15 +3,17 @@ import {
     AccountApi,
     Accountfile,
     Accountqueryresponse
-} from '../../services/SalesSvcCloudV2_accountService';
-import { DestinationService } from 'src/destination/destination.service';
+} from '../../services//SalesSvcCloudV2_accountService';
 
 @Injectable()
 export class AccountService {
-    constructor(private readonly destinationService: DestinationService) {}
+    constructor() {}
 
     async getAccountById(id: string): Promise<Accountfile> {
-        // const destination = this.destinationService.getDestination();
+        // const destinations = JSON.parse(process.env.destinations);
+        // const destination = destinations.find(
+        //     (d) => d.name === process.env.DESTINATION_NAME
+        // );
 
         //Read complete Account from AccountAPI
         return await AccountApi.readaccountserviceAccount(id)
