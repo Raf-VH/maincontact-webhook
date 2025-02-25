@@ -161,21 +161,8 @@ The application is deployed on SAP Business Technology Platform (BTP) with a tra
 npm install
 ```
 
-3. Generate service entities: Install the` @sap-cloud-sdk/openapi-generator package`
-
-```
-npm install @sap-cloud-sdk/openapi-generator
-```
-
-Create a folder /service-specs at the root of the project. Download the JSON API Specification for the Account + Contact service. And place it in the newly created folder.
-
-Next generate the service entities with the following command:
-
-```
-npx openapi-generator --input ./service-specs --outputDir services
-```
-
 3. Configure environment:
+The `DESTINATION_NAME` wil be the name of your destination you want to use in BTP.
 
 ```
 DESTINATION_NAME=your_destination
