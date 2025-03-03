@@ -152,7 +152,7 @@ The application is deployed on SAP Business Technology Platform (BTP) with a tra
 - Node.js & npm
 - SAP BTP Cloud Foundry
 - SSCV2 environment
-- Configured destinations
+- Configured destinations & XSUAA service
 
 ### Installation
 
