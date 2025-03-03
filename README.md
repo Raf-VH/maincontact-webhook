@@ -84,6 +84,8 @@ The application uses NestJS's built-in exception handling with custom HTTP excep
 
 The application uses SAP BTP's Destination Service for secure credential management and authentication. All credentials and certificates are centrally managed through the BTP Cockpit, ensuring sensitive data never appears in application code.
 
+In addition to the Destination Service, the application also leverages SAP BTP's XSUAA Service for secure authorization and authentication. XSUAA manages access to the application using OAuth 2.0 tokens, ensuring that users can only access the services and data they are authorized for. This provides a standardized and secure access management framework, with authentication handled through a trusted identity provider.
+
 ### Data Protection
 
 - Optimistic locking using `If-Match` headers prevents concurrent modifications
