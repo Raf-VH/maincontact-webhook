@@ -37,7 +37,7 @@ The webhook specifically processes:
 #### 1. SAP Sales Cloud v2
 
 - Core platform with event-driven communication via Auto Flow
-- OData APIs for contact and account management
+- REST APIs for contact and account management
 - Native webhook integration capabilities
 
 #### 2. SAP BTP Application
@@ -45,7 +45,7 @@ The webhook specifically processes:
 - Node.js application with NestJS framework
 - Deployed on Cloud Foundry runtime
 - Event processing and contact updates
-- OData API communication
+- REST API communication
 
 ### Integration Flow
 
@@ -110,7 +110,7 @@ The application uses Jest as the testing framework with NestJS's built-in testin
 - Error handling scenarios
 - Missing data handling
 
-#### 2. ContactSercice Tests
+#### 2. ContactService Tests
 
 - Main contact updates (true/false)
 - API communication
