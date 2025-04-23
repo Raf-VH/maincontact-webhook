@@ -152,7 +152,7 @@ The application is deployed on SAP Business Technology Platform (BTP) with a tra
 - Node.js & npm
 - SAP BTP Cloud Foundry
 - SSCV2 environment
-- Configured destinations & XSUAA service
+  <!-- - Configured destinations & XSUAA service -->
 
 ### Installation
 
@@ -164,13 +164,25 @@ npm install
 ```
 
 3. Configure environment:
-The `DESTINATION_NAME` wil be the name of your destination you want to use in BTP.
+   The `DESTINATION_NAME` wil be the name of your destination you want to use in BTP.
 
 ```
 DESTINATION_NAME=your_destination
 ```
 
-4. Deploy:
+4. To create the necessary services for deployment, execute these commands:
+
+```
+# Create the destination service
+cf create-service destination lite maincontact-webhook-destination
+```
+
+```
+# Create the XSUAA service using your security configuration
+cf create-service xsuaa application maincontact-webhook-xsuaa -c ./xs-security.json
+```
+
+5. Deploy:
 
 ```
 cf push
