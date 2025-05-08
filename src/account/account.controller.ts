@@ -7,17 +7,14 @@ import {
     Post
 } from '@nestjs/common';
 import { AccountService } from './account.service';
-import { Accountfile } from 'services/SalesSvcCloudV2_accountService';
-import { ContactService } from 'src/contact/contact.service';
+import { Accountfile } from '../../services/SalesSvcCloudV2_accountService';
+import { ContactService } from '../contact/contact.service';
 
 @Controller('/account')
 export class AccountController {
     private readonly logger = new Logger(AccountService.name);
 
-    constructor(
-        private readonly accountservice: AccountService,
-        private readonly contactservice: ContactService
-    ) {}
+    constructor(private readonly contactservice: ContactService) {}
 
     @Post()
     async receiveWebhookData(
@@ -25,9 +22,9 @@ export class AccountController {
     ): Promise<Accountfile> {
         try {
             const currentContactId =
-                webhookPayload.data?.currentImage?.primaryContactId ?? '';
+                webhookPayload.data.currentImage?.primaryContactId ?? '';
             const beforeContactId =
-                webhookPayload.data?.beforeImage?.primaryContactId ?? '';
+                webhookPayload.data.beforeImage?.primaryContactId ?? '';
 
             this.logger.debug(
                 `Incoming Current Contact ID: ${currentContactId}`
