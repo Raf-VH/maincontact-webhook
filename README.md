@@ -141,7 +141,7 @@ Each component includes tests for:
 The application is deployed on SAP Business Technology Platform (BTP) with a trail subaccount using:
 
 - Runtime: Cloud Foundry Node.js buildpack
-- Memory: 128MB per instance
+- Memory: 256MB per instance
 - Instances: 3 (horizontally scaled)
 - Region: US10 (United States)
 
@@ -152,7 +152,8 @@ The application is deployed on SAP Business Technology Platform (BTP) with a tra
 - Node.js & npm
 - SAP BTP Cloud Foundry
 - SSCV2 environment
-  <!-- - Configured destinations & XSUAA service -->
+- Configured destinations & XSUAA service
+- Configured Autoflow & Communication System in SSCV2
 
 ### Installation
 
@@ -182,8 +183,24 @@ cf create-service destination lite maincontact-webhook-destination
 cf create-service xsuaa application maincontact-webhook-xsuaa -c ./xs-security.json
 ```
 
+5. Build application:
+
+```
+npm run build
+```
+
 5. Deploy:
 
 ```
 cf push
 ```
+
+6. Create service key on XSUAA instance
+
+```
+cf create-service-key maincontact-webhook-xsuaa webhook-service-key
+```
+
+7. Setup communication system & Configure Auth with service key credentials
+
+8. Create autoflow that uses the communication system

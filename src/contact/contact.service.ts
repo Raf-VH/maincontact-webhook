@@ -1,8 +1,5 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
-import {
-    ContactPersonApi,
-    ContactPersonfile
-} from '../../services/SalesSvcCloudV2_contactPersonService';
+import { ContactPersonApi, ContactPersonfile } from '../../services/SalesSvcCloudV2_contactPersonService';
 
 @Injectable()
 export class ContactService {
@@ -10,10 +7,7 @@ export class ContactService {
 
     constructor() {}
 
-    private async updateContactMainStatus(
-        id: string,
-        isMainContact: boolean
-    ): Promise<ContactPersonfile> {
+    private async updateContactMainStatus(id: string, isMainContact: boolean): Promise<ContactPersonfile> {
         if (id == '') {
             throw new HttpException('Account has no primary contact', 404);
         }
@@ -25,10 +19,9 @@ export class ContactService {
 
         try {
             // Get contact to get 'updatedOn'
-            const contact =
-                await ContactPersonApi.readcontactpersonserviceContactperson(
-                    id
-                ).execute({ destinationName: process.env.DESTINATION_NAME! });
+            const contact = await ContactPersonApi.readcontactpersonserviceContactperson(id).execute({
+                destinationName: process.env.DESTINATION_NAME!
+            });
 
             const updatedOn = contact.value?.adminData?.updatedOn;
 
@@ -36,27 +29,22 @@ export class ContactService {
                 `Contact ${contact.value?.givenName} ${contact.value?.familyName} last modified: ${updatedOn}`
             );
 
-            //Update 'MainContact' field
-            return await ContactPersonApi.partialupdatecontactpersonserviceContactperson(
-                id,
-                {
-                    extensions: {
-                        MainContact: isMainContact
-                    }
-                },
-                {
-                    'If-Match': `"${updatedOn!}"`
+            const updatePayload: any = {
+                extensions: {
+                    MainContact: isMainContact
                 }
-            )
+            };
+
+            //Update 'MainContact' field
+            return await ContactPersonApi.partialupdatecontactpersonserviceContactperson(id, updatePayload, {
+                'If-Match': `"${updatedOn!}"`
+            })
                 .addCustomHeaders({
                     'Content-Type': 'application/merge-patch+json'
                 })
                 .execute({ destinationName: process.env.DESTINATION_NAME! });
         } catch (error) {
-            throw new HttpException(
-                `Failed to update main contact - ${error.message}`,
-                500
-            );
+            throw new HttpException(`Failed to update main contact - ${error.message}`, 500);
         }
     }
 

@@ -5,7 +5,7 @@ applications:
           - nodejs_buildpack
       memory: 256M
       instances: 3
-      command: npm run build && npm run start:prod
+      command: npm run start:prod
       random-route: true
       services:
           - maincontact-webhook-destination
