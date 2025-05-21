@@ -78,4 +78,4 @@ cf create-service-key maincontact-webhook-xsuaa webhook-service-key
 
 10. Create autoflow that uses the communication system
 
-Note: For more detailed explaination how to setup this project from zero, go to `Blueprint Webhook`
+Note: For more detailed explaination how to setup this project from zero, go to `Technical Documentation`
